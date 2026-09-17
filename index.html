@@ -54,7 +54,7 @@
                     <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1.5">Category</label>
                     <select id="categorySelect" class="w-full bg-slate-50 border border-slate-300 rounded-lg px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition">
                         <option value="Merit">Merit</option>
-                        <option value="Participation">Participation</option>
+                        <option value="Participation" selected>Participation</option>
                     </select>
                 </div>
 
@@ -71,13 +71,13 @@
                 <!-- Recipient Name -->
                 <div>
                     <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1.5">Recipient Name</label>
-                    <input type="text" id="recipientName" placeholder="e.g., Alex Johnson" value="Naseer" class="w-full bg-slate-50 border border-slate-300 rounded-lg px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition">
+                    <input type="text" id="recipientName" placeholder="e.g., Write the name Candidate"  class="w-full bg-slate-50 border border-slate-300 rounded-lg px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition">
                 </div>
 
                 <!-- Program Name -->
                 <div>
                     <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1.5">Program / Event Name</label>
-                    <input type="text" id="programName" placeholder="e.g., Qira’ath" value="Qira’ath" class="w-full bg-slate-50 border border-slate-300 rounded-lg px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition">
+                    <input type="text" id="programName" placeholder="e.g., Qira’ath"  class="w-full bg-slate-50 border border-slate-300 rounded-lg px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition">
                 </div>
 
                 <!-- Date Field -->
@@ -157,6 +157,8 @@
 
         certDateInput.value = new Date().toISOString().split('T')[0];
 
+        positionContainer.style.display = categorySelect.value === 'Participation' ? 'none' : 'block';
+
         const images = {
             'Merit_1st': 'img/cert_1st.png',
             'Merit_2nd': 'img/cert_2nd.png',
@@ -171,7 +173,6 @@
         function preloadImages() {
             for (let key in images) {
                 loadedImages[key] = new Image();
-                // Adding crossOrigin helps prevent tainted canvas issues where supported
                 loadedImages[key].crossOrigin = "anonymous";
                 loadedImages[key].src = images[key];
                 loadedImages[key].onload = () => {
@@ -243,14 +244,17 @@
             } else {
                 canvas.width = 1200;
                 canvas.height = 850;
-                ctx.fillStyle = '#f8fafc';
+                ctx.fillStyle = '#ffffff';
                 ctx.fillRect(0, 0, canvas.width, canvas.height);
+                ctx.strokeStyle = '#e2e8f0';
+                ctx.lineWidth = 10;
+                ctx.strokeRect(20, 20, canvas.width - 40, canvas.height - 40);
             }
 
             // --- 1. Render Recipient Name ---
             ctx.save();
             ctx.font = `bold ${Math.round(canvas.height * 0.052)}px 'CustomBebas', 'Oswald', sans-serif`;
-            ctx.fillStyle = '#e61274'; 
+            ctx.fillStyle = category === 'Participation' ? '#11aeb8' : '#e61274'; 
             ctx.textAlign = CONFIG.name.align;
             ctx.textBaseline = 'middle';
 
@@ -291,16 +295,17 @@
                     { text: 'and outstanding performance.', bold: false, fontSize: baseFontSize }
                 ];
             } else {
+                // Exact Paragraph Break Setup
                 line1Segments = [
-                    { text: 'for successfully participating in ', bold: false, fontSize: baseFontSize },
+                    { text: 'for their enthusiastic participation in ', bold: false, fontSize: baseFontSize },
                     { text: programName, bold: true, fontSize: baseFontSize },
-                    { text: ' at ZiFest 2026,', bold: false, fontSize: baseFontSize }
+                    { text: ' as part of ZiFest-\'26,', bold: false, fontSize: baseFontSize }
                 ];
                 line2Segments = [
-                    { text: 'organized by Zidnee. In recognition of enthusiasm,', bold: false, fontSize: baseFontSize }
+                    { text: 'organized by Zidnee. We appreciate their enthusiasm, creativity, and wonderful', bold: false, fontSize: baseFontSize }
                 ];
                 line3Segments = [
-                    { text: 'engagement, and commitment.', bold: false, fontSize: baseFontSize }
+                    { text: 'participation in making ZiFest a joyful and memorable celebration.', bold: false, fontSize: baseFontSize }
                 ];
             }
 
@@ -323,20 +328,16 @@
             ctx.restore();
         }
 
-        // Robust download handler with automatic taint-fallback protection
+        // Robust download handler with taint fallback protection
         downloadBtn.addEventListener('click', () => {
             const safeName = recipientNameInput.value.trim().replace(/[^a-zA-Z0-9]/g, '_') || 'Certificate';
             const link = document.createElement('a');
             link.download = `${safeName}_Certificate.png`;
 
             try {
-                // Try exporting current canvas directly
                 link.href = canvas.toDataURL('image/png', 1.0);
                 link.click();
             } catch (err) {
-                console.warn('Canvas tainted by local file access. Generating export-safe canvas copy for download...');
-                
-                // Fallback: Build a clean export canvas dynamically to bypass CORS/local limitations
                 const exportCanvas = document.createElement('canvas');
                 exportCanvas.width = canvas.width;
                 exportCanvas.height = canvas.height;
@@ -348,10 +349,9 @@
                 let bgImg = loadedImages[imgKey];
 
                 const finishDownload = () => {
-                    // Re-render text layers on top of the clean export canvas
                     exportCtx.save();
                     exportCtx.font = ctx.font;
-                    exportCtx.fillStyle = '#e61274';
+                    exportCtx.fillStyle = category === 'Participation' ? '#11aeb8' : '#e61274';
                     exportCtx.textAlign = CONFIG.name.align;
                     exportCtx.textBaseline = 'middle';
                     let nameXPos = (exportCanvas.width * CONFIG.name.x) / 90;
@@ -359,16 +359,15 @@
                     exportCtx.fillText(recipientNameInput.value.trim() || 'Naseer', nameXPos, nameYPos);
                     exportCtx.restore();
 
-                    // Trigger direct download from safe canvas
                     link.href = exportCanvas.toDataURL('image/png', 1.0);
                     link.click();
                 };
 
-                if (bgImg && bgImg.complete) {
+                if (bgImg && bgImg.complete && bgImg.naturalWidth !== 0) {
                     exportCtx.drawImage(bgImg, 0, 0);
                     finishDownload();
                 } else {
-                    exportCtx.fillStyle = '#f8fafc';
+                    exportCtx.fillStyle = '#ffffff';
                     exportCtx.fillRect(0, 0, exportCanvas.width, exportCanvas.height);
                     finishDownload();
                 }
