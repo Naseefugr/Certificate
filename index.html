@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modern Certificate Generator</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Oswald:wght@500;700&display=swap" rel="stylesheet">
+    <style>
+        @font-face {
+            font-family: 'CustomBebas';
+            src: local('Bebas Neue Pro'), local('BebasNeue'), sans-serif;
+        }
+        @font-face {
+            font-family: 'BebasNeueProSmE';
+            src: local('Bebas Neue Pro SmE Bk'), local('Bebas Neue Pro'), sans-serif;
+            font-weight: normal;
+        }
+        @font-face {
+            font-family: 'BebasNeueProExp';
+            src: local('Bebas Neue Pro Exp Rg'), local('Bebas Neue Pro'), sans-serif;
+            font-weight: normal;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 min-h-screen text-slate-800 flex flex-col justify-between">
+
+    <!-- Header -->
+    <header class="bg-white shadow-sm py-4 px-6 mb-6">
+        <div class="max-w-7xl mx-auto flex items-center justify-between">
+            <h1 class="text-xl font-bold tracking-tight text-slate-900 flex items-center gap-2">
+                <svg class="w-6 h-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+                Certificate Generator Studio
+            </h1>
+            <span class="text-xs font-medium bg-indigo-50 text-indigo-700 px-3 py-1 rounded-full border border-indigo-100">HTML5 Canvas Engine</span>
+        </div>
+    </header>
+
+    <!-- Main Container Dashboard -->
+    <main class="max-w-7xl mx-auto px-4 w-full grid grid-cols-1 lg:grid-cols-12 gap-8 mb-12">
+        
+        <!-- Control Panel Form (5 Columns) -->
+        <section class="lg:col-span-5 bg-white rounded-2xl shadow-sm border border-slate-200 p-6 flex flex-col justify-between">
+            <div class="space-y-5">
+                <div>
+                    <h2 class="text-lg font-semibold text-slate-900">Certificate Details</h2>
+                    <p class="text-xs text-slate-500">Configure parameters to generate the custom certificate live.</p>
+                </div>
+
+                <!-- Category Selection -->
+                <div>
+                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1.5">Category</label>
+                    <select id="categorySelect" class="w-full bg-slate-50 border border-slate-300 rounded-lg px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition">
+                        <option value="Merit">Merit</option>
+                        <option value="Participation">Participation</option>
+                    </select>
+                </div>
+
+                <!-- Conditional Merit Sub-options -->
+                <div id="positionContainer">
+                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1.5">Position Level</label>
+                    <select id="positionSelect" class="w-full bg-slate-50 border border-slate-300 rounded-lg px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition">
+                        <option value="1st">1st Place</option>
+                        <option value="2nd">2nd Place</option>
+                        <option value="3rd">3rd Place</option>
+                    </select>
+                </div>
+
+                <!-- Recipient Name -->
+                <div>
+                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1.5">Recipient Name</label>
+                    <input type="text" id="recipientName" placeholder="e.g., Alex Johnson" value="Naseer" class="w-full bg-slate-50 border border-slate-300 rounded-lg px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition">
+                </div>
+
+                <!-- Program Name -->
+                <div>
+                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1.5">Program / Event Name</label>
+                    <input type="text" id="programName" placeholder="e.g., Qira’ath" value="Qira’ath" class="w-full bg-slate-50 border border-slate-300 rounded-lg px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition">
+                </div>
+
+                <!-- Date Field -->
+                <div>
+                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1.5">Date Issued</label>
+                    <input type="date" id="certDate" class="w-full bg-slate-50 border border-slate-300 rounded-lg px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition">
+                </div>
+            </div>
+
+            <!-- Download Button Action -->
+            <div class="mt-8 pt-4 border-t border-slate-100">
+                <button id="downloadBtn" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-3 px-4 rounded-xl shadow-md transition flex items-center justify-center gap-2 cursor-pointer">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                    Download Certificate (PNG)
+                </button>
+            </div>
+        </section>
+
+        <!-- Live Preview Area (7 Columns) -->
+        <section class="lg:col-span-7 bg-white rounded-2xl shadow-sm border border-slate-200 p-6 flex flex-col items-center justify-center">
+            <div class="w-full flex items-center justify-between mb-4">
+                <h3 class="text-sm font-semibold text-slate-700 tracking-wide uppercase">Live Canvas Preview</h3>
+                <span class="inline-flex items-center gap-1.5 text-xs text-emerald-600 bg-emerald-50 px-2.5 py-0.5 rounded-full font-medium">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> Auto-updating
+                </span>
+            </div>
+
+            <!-- Responsive Canvas Container -->
+            <div class="w-full overflow-hidden rounded-xl border border-slate-100 bg-slate-900 shadow-inner flex items-center justify-center relative group">
+                <canvas id="certCanvas" class="w-full h-auto max-h-[550px] object-contain block"></canvas>
+            </div>
+            <p class="text-xs text-slate-400 mt-3 text-center">High-resolution layout rendered natively using HTML5 Canvas.</p>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="text-center py-4 text-xs text-slate-400">
+        &copy; 2026 Certificate Generator Module. Built with Tailwind CSS & HTML5 Canvas.
+    </footer>
+
+    <!-- Application Script -->
+    <script>
+        // ==========================================
+        // MANUAL CONFIGURATION SETTINGS (IN PERCENTAGES %)
+        // ==========================================
+        const CONFIG = {
+            name: {
+                x: 50.5,          
+                y: 45.5,        
+                align: 'center' 
+            },
+            description: {
+                x: 50,          
+                y: 54.5,        
+                maxWidth: 700,   
+                lineSpacing: 0.9, 
+                align: 'center' 
+            },
+            date: {
+                x: 21,        
+                y: 73.2,        
+                align: 'left'   
+            }
+        };
+        // ==========================================
+
+        const categorySelect = document.getElementById('categorySelect');
+        const positionContainer = document.getElementById('positionContainer');
+        const positionSelect = document.getElementById('positionSelect');
+        const recipientNameInput = document.getElementById('recipientName');
+        const programNameInput = document.getElementById('programName');
+        const certDateInput = document.getElementById('certDate');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const canvas = document.getElementById('certCanvas');
+        const ctx = canvas.getContext('2d');
+
+        certDateInput.value = new Date().toISOString().split('T')[0];
+
+        const images = {
+            'Merit_1st': 'img/cert_1st.png',
+            'Merit_2nd': 'img/cert_2nd.png',
+            'Merit_3rd': 'img/cert_3rd.png',
+            'Participation': 'img/cert_participation.png'
+        };
+
+        let loadedImages = {};
+        let imagesToLoad = Object.keys(images).length;
+        let imagesLoadedCount = 0;
+
+        function preloadImages() {
+            for (let key in images) {
+                loadedImages[key] = new Image();
+                // Adding crossOrigin helps prevent tainted canvas issues where supported
+                loadedImages[key].crossOrigin = "anonymous";
+                loadedImages[key].src = images[key];
+                loadedImages[key].onload = () => {
+                    imagesLoadedCount++;
+                    if (imagesLoadedCount === imagesToLoad) generateCertificate();
+                };
+                loadedImages[key].onerror = () => {
+                    imagesLoadedCount++;
+                    if (imagesLoadedCount === imagesToLoad) generateCertificate();
+                }
+            }
+        }
+
+        categorySelect.addEventListener('change', (e) => {
+            positionContainer.style.display = e.target.value === 'Participation' ? 'none' : 'block';
+            generateCertificate();
+        });
+
+        [positionSelect, recipientNameInput, programNameInput, certDateInput].forEach(element => {
+            element.addEventListener('input', generateCertificate);
+            element.addEventListener('change', generateCertificate);
+        });
+
+        function drawRichTextLine(ctx, segments, startX, startY, align) {
+            let totalWidth = 0;
+            segments.forEach(seg => {
+                const fontWeight = seg.bold ? 'bold ' : '';
+                ctx.font = `${fontWeight}${seg.fontSize}px 'BebasNeueProSmE', 'CustomBebas', sans-serif`;
+                totalWidth += ctx.measureText(seg.text).width;
+            });
+
+            let currentX = startX;
+            if (align === 'center') {
+                currentX = startX - (totalWidth / 2);
+            } else if (align === 'right') {
+                currentX = startX - totalWidth;
+            }
+
+            segments.forEach(seg => {
+                const fontWeight = seg.bold ? 'bold ' : '';
+                ctx.font = `${fontWeight}${seg.fontSize}px 'BebasNeueProSmE', 'CustomBebas', sans-serif`;
+                ctx.fillStyle = seg.color || '#1e293b';
+                ctx.fillText(seg.text, currentX, startY);
+                currentX += ctx.measureText(seg.text).width;
+            });
+        }
+
+        function generateCertificate() {
+            const category = categorySelect.value;
+            const position = positionSelect.value;
+            const recipientName = recipientNameInput.value.trim() || '[Recipient Name]';
+            const programName = programNameInput.value.trim() || '[Program Name]';
+            
+            let formattedDate = certDateInput.value;
+            if (formattedDate) {
+                const dateObj = new Date(formattedDate);
+                formattedDate = dateObj.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+            } else {
+                formattedDate = 'September 17, 2026';
+            }
+
+            let imgKey = category === 'Merit' ? `Merit_${position}` : 'Participation';
+            let bgImg = loadedImages[imgKey];
+
+            if (bgImg && bgImg.complete && bgImg.naturalWidth !== 0) {
+                canvas.width = bgImg.naturalWidth;
+                canvas.height = bgImg.naturalHeight;
+                ctx.drawImage(bgImg, 0, 0);
+            } else {
+                canvas.width = 1200;
+                canvas.height = 850;
+                ctx.fillStyle = '#f8fafc';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+            }
+
+            // --- 1. Render Recipient Name ---
+            ctx.save();
+            ctx.font = `bold ${Math.round(canvas.height * 0.052)}px 'CustomBebas', 'Oswald', sans-serif`;
+            ctx.fillStyle = '#e61274'; 
+            ctx.textAlign = CONFIG.name.align;
+            ctx.textBaseline = 'middle';
+
+            let nameXPos = (canvas.width * CONFIG.name.x) / 90;
+            let nameYPos = (canvas.height * CONFIG.name.y) / 100;
+            ctx.fillText(recipientName, nameXPos, nameYPos);
+            ctx.restore();
+
+            // --- 2. Render Description / Body Text ---
+            ctx.save();
+            ctx.textBaseline = 'middle';
+            let baseFontSize = Math.round(canvas.height * 0.0300);
+            let descXPos = (canvas.width * CONFIG.description.x) / 90;
+            let descYPos = (canvas.height * CONFIG.description.y) / 100;
+            let baseLineHeight = canvas.height * 0.0350;
+            let customLineSpacing = baseLineHeight * CONFIG.description.lineSpacing;
+
+            let line1Segments = [];
+            let line2Segments = [];
+            let line3Segments = [];
+
+            if (category === 'Merit') {
+                let posOrdinalText = position === '1st' ? 'First (1st)' : position === '2nd' ? 'Second (2nd)' : 'Third (3rd)';
+                
+                line1Segments = [
+                    { text: 'for securing ', bold: false, fontSize: baseFontSize },
+                    { text: posOrdinalText, bold: true, fontSize: baseFontSize },
+                    { text: ' Position in ', bold: false, fontSize: baseFontSize },
+                    { text: programName, bold: true, fontSize: baseFontSize },
+                    { text: ' at ZiFest 2026,', bold: false, fontSize: baseFontSize }
+                ];
+                
+                line2Segments = [
+                    { text: 'organized by Zidnee. In recognition of their talent, dedication,', bold: false, fontSize: baseFontSize }
+                ];
+
+                line3Segments = [
+                    { text: 'and outstanding performance.', bold: false, fontSize: baseFontSize }
+                ];
+            } else {
+                line1Segments = [
+                    { text: 'for successfully participating in ', bold: false, fontSize: baseFontSize },
+                    { text: programName, bold: true, fontSize: baseFontSize },
+                    { text: ' at ZiFest 2026,', bold: false, fontSize: baseFontSize }
+                ];
+                line2Segments = [
+                    { text: 'organized by Zidnee. In recognition of enthusiasm,', bold: false, fontSize: baseFontSize }
+                ];
+                line3Segments = [
+                    { text: 'engagement, and commitment.', bold: false, fontSize: baseFontSize }
+                ];
+            }
+
+            drawRichTextLine(ctx, line1Segments, descXPos, descYPos, CONFIG.description.align);
+            drawRichTextLine(ctx, line2Segments, descXPos, descYPos + customLineSpacing, CONFIG.description.align);
+            drawRichTextLine(ctx, line3Segments, descXPos, descYPos + (customLineSpacing * 2), CONFIG.description.align);
+            
+            ctx.restore();
+
+            // --- 3. Render Date Field ---
+            ctx.save();
+            ctx.font = `normal ${Math.round(canvas.height * 0.019)}px 'BebasNeueProExp', 'CustomBebas', sans-serif`;
+            ctx.fillStyle = '#475569';
+            ctx.textAlign = CONFIG.date.align;
+            ctx.textBaseline = 'middle';
+
+            let dateXPos = (canvas.width * CONFIG.date.x) / 78;
+            let dateYPos = (canvas.height * CONFIG.date.y) / 89;
+            ctx.fillText(formattedDate, dateXPos, dateYPos);
+            ctx.restore();
+        }
+
+        // Robust download handler with automatic taint-fallback protection
+        downloadBtn.addEventListener('click', () => {
+            const safeName = recipientNameInput.value.trim().replace(/[^a-zA-Z0-9]/g, '_') || 'Certificate';
+            const link = document.createElement('a');
+            link.download = `${safeName}_Certificate.png`;
+
+            try {
+                // Try exporting current canvas directly
+                link.href = canvas.toDataURL('image/png', 1.0);
+                link.click();
+            } catch (err) {
+                console.warn('Canvas tainted by local file access. Generating export-safe canvas copy for download...');
+                
+                // Fallback: Build a clean export canvas dynamically to bypass CORS/local limitations
+                const exportCanvas = document.createElement('canvas');
+                exportCanvas.width = canvas.width;
+                exportCanvas.height = canvas.height;
+                const exportCtx = exportCanvas.getContext('2d');
+                
+                const category = categorySelect.value;
+                const position = positionSelect.value;
+                let imgKey = category === 'Merit' ? `Merit_${position}` : 'Participation';
+                let bgImg = loadedImages[imgKey];
+
+                const finishDownload = () => {
+                    // Re-render text layers on top of the clean export canvas
+                    exportCtx.save();
+                    exportCtx.font = ctx.font;
+                    exportCtx.fillStyle = '#e61274';
+                    exportCtx.textAlign = CONFIG.name.align;
+                    exportCtx.textBaseline = 'middle';
+                    let nameXPos = (exportCanvas.width * CONFIG.name.x) / 90;
+                    let nameYPos = (exportCanvas.height * CONFIG.name.y) / 100;
+                    exportCtx.fillText(recipientNameInput.value.trim() || 'Naseer', nameXPos, nameYPos);
+                    exportCtx.restore();
+
+                    // Trigger direct download from safe canvas
+                    link.href = exportCanvas.toDataURL('image/png', 1.0);
+                    link.click();
+                };
+
+                if (bgImg && bgImg.complete) {
+                    exportCtx.drawImage(bgImg, 0, 0);
+                    finishDownload();
+                } else {
+                    exportCtx.fillStyle = '#f8fafc';
+                    exportCtx.fillRect(0, 0, exportCanvas.width, exportCanvas.height);
+                    finishDownload();
+                }
+            }
+        });
+
+        window.onload = () => {
+            preloadImages();
+        };
+    </script>
+</body>
+</html>
